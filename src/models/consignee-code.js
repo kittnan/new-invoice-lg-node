@@ -3,11 +3,7 @@ const Schema = mongoose.Schema;
 
 const model = new Schema(
   {
-    line1: String,
-    line2: String,
-    line3: String,
-    line4: String,
-    line5: String,
+    "CONSIGNEE-CODE": String,
     active: {
       type: Boolean,
       default: true,
@@ -17,6 +13,6 @@ const model = new Schema(
   { timestamps: true, versionKey: false, strict: true }
 );
 
-const UserModule = mongoose.model("ktc_address", model);
+const UserModule = mongoose.model("consignee_code", model);
 
 module.exports = UserModule;

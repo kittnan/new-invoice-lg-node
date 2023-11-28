@@ -10,8 +10,13 @@ const model = new Schema(
     line4: String,
     line5: String,
     line6: String,
+    active: {
+      type: Boolean,
+      default: true,
+      require: true,
+    },
   },
-  { timestamps: true, versionKey: false, strict: false }
+  { timestamps: true, versionKey: false, strict: true }
 );
 
 const UserModule = mongoose.model("consignee", model);

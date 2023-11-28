@@ -31,8 +31,17 @@ app.use("/ktc-address", KTC_ADDRESS);
 let CONSIGNEE = require("./src/routes/consignee");
 app.use("/consignee", CONSIGNEE);
 
+let CONSIGNEE_CODE = require("./src/routes/consignee-code");
+app.use("/consignee-code", CONSIGNEE_CODE);
+
 let ACCOUNTEE = require("./src/routes/accountee");
 app.use("/accountee", ACCOUNTEE);
+
+let PKTA = require("./src/routes/pkta");
+app.use("/pkta", PKTA);
+
+let PACKING = require("./src/routes/packing");
+app.use("/packing", PACKING);
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");

@@ -2,11 +2,23 @@ let express = require("express");
 let router = express.Router();
 var mongoose = require("mongodb");
 const { ObjectId } = mongoose;
-const KTC_ADDRESS = require("../models/ktc-address");
+const CONSIGNEE_CODE = require("../models/consignee-code");
+
+router.post("/import", async (req, res, next) => {
+  try {
+    const deleteStat = await CONSIGNEE_CODE.deleteMany({});
+    console.log("🚀 ~ deleteStat:", deleteStat);
+    const data = await CONSIGNEE_CODE.insertMany(req.body);
+    res.json(data);
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
+    res.sendStatus(500);
+  }
+});
 
 router.get("/", async (req, res, next) => {
   try {
-    const usersQuery = await KTC_ADDRESS.aggregate([
+    const usersQuery = await CONSIGNEE_CODE.aggregate([
       {
         $match: {
           active: true,
@@ -22,7 +34,7 @@ router.get("/", async (req, res, next) => {
 
 router.post("/create", async (req, res, next) => {
   try {
-    const data = await KTC_ADDRESS.insertMany(req.body);
+    const data = await CONSIGNEE_CODE.insertMany(req.body);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -45,7 +57,7 @@ router.post("/createOrUpdate", async (req, res, next) => {
         };
       }
     });
-    const data = await KTC_ADDRESS.bulkWrite(form);
+    const data = await CONSIGNEE_CODE.bulkWrite(form);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -54,7 +66,7 @@ router.post("/createOrUpdate", async (req, res, next) => {
 });
 router.put("/update", async (req, res, next) => {
   try {
-    const data = await KTC_ADDRESS.updateOne(
+    const data = await CONSIGNEE_CODE.updateOne(
       {
         _id: new ObjectId(req.body._id),
       },
@@ -79,7 +91,7 @@ router.put("/delete", async (req, res, next) => {
         },
       };
     });
-    const data = await KTC_ADDRESS.bulkWrite(form);
+    const data = await CONSIGNEE_CODE.bulkWrite(form);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -89,11 +101,12 @@ router.put("/delete", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const data = await KTC_ADDRESS.deleteOne({ _id: id });
+    const data = await CONSIGNEE_CODE.deleteOne({ _id: id });
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
     res.sendStatus(500);
   }
 });
+
 module.exports = router;

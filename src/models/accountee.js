@@ -16,8 +16,13 @@ const model = new Schema(
     paymentItem: String,
     freight: String,
     contractTerm: String,
+    active: {
+      type: Boolean,
+      default: true,
+      require: true,
+    },
   },
-  { timestamps: true, versionKey: false, strict: false }
+  { timestamps: true, versionKey: false, strict: true }
 );
 
 const UserModule = mongoose.model("accountee", model);
