@@ -43,6 +43,15 @@ app.use("/pkta", PKTA);
 let PACKING = require("./src/routes/packing");
 app.use("/packing", PACKING);
 
+let ITEM_CODE = require("./src/routes/item-code");
+app.use("/item-code", ITEM_CODE);
+
+let COUNTRY = require("./src/routes/country");
+app.use("/country", COUNTRY);
+
+let MODEL = require("./src/routes/model");
+app.use("/model", MODEL);
+
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST ,PUT ,DELETE");

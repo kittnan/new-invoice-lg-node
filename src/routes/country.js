@@ -2,35 +2,15 @@ let express = require("express");
 let router = express.Router();
 var mongoose = require("mongodb");
 const { ObjectId } = mongoose;
-const PKTA = require("../models/pkta");
+const COUNTRY = require("../models/country");
 
 router.get("/", async (req, res, next) => {
   try {
-    let { key ,status} = req.query;
-    let con = [
+    const usersQuery = await COUNTRY.aggregate([
       {
         $match: {},
       },
-    ];
-    if (key) {
-      key = JSON.parse(key);
-      con.push({
-        $match: {
-          "Delivery Note#": key,
-        },
-      });
-    }
-    if (status) {
-      status = JSON.parse(status);
-      con.push({
-        $match: {
-          status: {
-            $in:status
-          }
-        },
-      });
-    }
-    const usersQuery = await PKTA.aggregate(con);
+    ]);
     res.json(usersQuery);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -38,26 +18,21 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// router.get("/key", async (req, res, next) => {
-//   try {
-//     const { key } = req.query;
-//     const usersQuery = await PKTA.aggregate([
-//       {
-//         $match: {
-//           "Delivery Note#": key,
-//         },
-//       },
-//     ]);
-//     res.json(usersQuery);
-//   } catch (error) {
-//     console.log("🚀 ~ error:", error);
-//     res.sendStatus(500);
-//   }
-// });
+router.post("/import", async (req, res, next) => {
+  try {
+    const deleteStat = await COUNTRY.deleteMany({});
+    console.log("🚀 ~ deleteStat:", deleteStat);
+    const data = await COUNTRY.insertMany(req.body);
+    res.json(data);
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
+    res.sendStatus(500);
+  }
+});
 
 router.post("/create", async (req, res, next) => {
   try {
-    const data = await PKTA.insertMany(req.body);
+    const data = await COUNTRY.insertMany(req.body);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -80,7 +55,7 @@ router.post("/createOrUpdate", async (req, res, next) => {
         };
       }
     });
-    const data = await PKTA.bulkWrite(form);
+    const data = await COUNTRY.bulkWrite(form);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -89,7 +64,7 @@ router.post("/createOrUpdate", async (req, res, next) => {
 });
 router.put("/update", async (req, res, next) => {
   try {
-    const data = await PKTA.updateOne(
+    const data = await COUNTRY.updateOne(
       {
         _id: new ObjectId(req.body._id),
       },
@@ -114,7 +89,7 @@ router.put("/delete", async (req, res, next) => {
         },
       };
     });
-    const data = await PKTA.bulkWrite(form);
+    const data = await COUNTRY.bulkWrite(form);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -124,7 +99,7 @@ router.put("/delete", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const data = await PKTA.deleteOne({ _id: id });
+    const data = await COUNTRY.deleteOne({ _id: id });
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
