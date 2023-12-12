@@ -55,6 +55,9 @@ app.use("/model", MODEL);
 let Users = require("./src/routes/users");
 app.use("/users", Users);
 
+let Reprint = require("./src/routes/reprint");
+app.use("/reprint", Reprint);
+
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST ,PUT ,DELETE");

@@ -2,8 +2,7 @@ let express = require("express");
 let router = express.Router();
 var mongoose = require("mongodb");
 const { ObjectId } = mongoose;
-const PKTA = require("../models/pkta");
-const PACKING = require("../models/packing");
+const REPRINT = require("../models/reprint");
 const moment = require("moment");
 
 router.get("/", async (req, res, next) => {
@@ -32,7 +31,7 @@ router.get("/", async (req, res, next) => {
         },
       });
     }
-    const usersQuery = await PKTA.aggregate(con);
+    const usersQuery = await REPRINT.aggregate(con);
     res.json(usersQuery);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -73,7 +72,7 @@ router.get("/search", async (req, res, next) => {
       if (date.start && date.end) {
         con.push({
           $match: {
-            createdAt: {
+            printDate: {
               $gte: moment(date.start).startOf("day").toDate(),
               $lte: moment(date.end).endOf("day").toDate(),
             },
@@ -82,7 +81,7 @@ router.get("/search", async (req, res, next) => {
       } else if (date.start) {
         con.push({
           $match: {
-            createdAt: {
+            printDate: {
               $gte: moment(date.start).startOf("day").toDate(),
             },
           },
@@ -90,7 +89,7 @@ router.get("/search", async (req, res, next) => {
       } else if (date.end) {
         con.push({
           $match: {
-            createdAt: {
+            printDate: {
               $lte: moment(date.end).endOf("day").toDate(),
             },
           },
@@ -99,13 +98,13 @@ router.get("/search", async (req, res, next) => {
     }
     con.push({
       $lookup: {
-        from: "reprints",
-        localField: "Delivery Note#",
-        foreignField: "invoice",
-        as: "reprint",
+        from: "packings",
+        localField: "SO#",
+        foreignField: "(KGSS) Customer PO",
+        as: "packing",
       },
     });
-    const usersQuery = await PKTA.aggregate(con);
+    const usersQuery = await REPRINT.aggregate(con);
     res.json(usersQuery);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -114,41 +113,8 @@ router.get("/search", async (req, res, next) => {
 });
 router.post("/create", async (req, res, next) => {
   try {
-    if (req.body.data) {
-      let invoices = req.body.data.map((a) => a["Delivery Note#"]);
-      console.log("🚀 ~ invoices:", invoices);
-      if (req.body.option && req.body.option == "clear") {
-        const form = req.body.data.map((a) => {
-          return {
-            deleteMany: {
-              filter: {
-                "Delivery Note#": a["Delivery Note#"],
-              },
-            },
-          };
-        });
-        const bwRes = await PKTA.bulkWrite(form);
-        const data = await PKTA.insertMany(req.body.data);
-        res.json(data);
-      } else {
-        let qData = await PKTA.aggregate([
-          {
-            $match: {
-              "Delivery Note#": {
-                $in: invoices,
-              },
-            },
-          },
-        ]);
-        console.log("🚀 ~ qData:", qData);
-        if (qData && qData.length > 0) {
-          throw "duplicate invoice please check!!";
-        } else {
-          const data = await PKTA.insertMany(req.body.data);
-          res.json(data);
-        }
-      }
-    }
+    const data = await REPRINT.insertMany(req.body)
+    res.json(data)
   } catch (error) {
     console.log("🚀 ~ error:", error);
     res.sendStatus(500);
@@ -170,7 +136,7 @@ router.post("/createOrUpdate", async (req, res, next) => {
         };
       }
     });
-    const data = await PKTA.bulkWrite(form);
+    const data = await REPRINT.bulkWrite(form);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -179,7 +145,7 @@ router.post("/createOrUpdate", async (req, res, next) => {
 });
 router.put("/update", async (req, res, next) => {
   try {
-    const data = await PKTA.updateOne(
+    const data = await REPRINT.updateOne(
       {
         _id: new ObjectId(req.body._id),
       },
@@ -204,7 +170,7 @@ router.put("/delete", async (req, res, next) => {
         },
       };
     });
-    const data = await PKTA.bulkWrite(form);
+    const data = await REPRINT.bulkWrite(form);
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -214,31 +180,7 @@ router.put("/delete", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const data = await PKTA.deleteOne({ _id: id });
-    res.json(data);
-  } catch (error) {
-    console.log("🚀 ~ error:", error);
-    res.sendStatus(500);
-  }
-});
-router.put("/deleteByInvoice", async (req, res, next) => {
-  try {
-    await PKTA.updateMany({
-      'Delivery Note#': req.body.invoice
-    },
-    {
-      $set:{
-        status:'unavailable'
-      }
-    })
-   const data= await PACKING.updateMany({
-      'Invoice No': req.body.invoice
-    },
-    {
-      $set:{
-        status:'unavailable'
-      }
-    })
+    const data = await REPRINT.deleteOne({ _id: id });
     res.json(data);
   } catch (error) {
     console.log("🚀 ~ error:", error);

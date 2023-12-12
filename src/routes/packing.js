@@ -6,7 +6,7 @@ const PACKING = require("../models/packing");
 
 router.get("/", async (req, res, next) => {
   try {
-    let { key } = req.query;
+    let { key,status } = req.query;
     let con = [
       {
         $match: {},
@@ -17,6 +17,16 @@ router.get("/", async (req, res, next) => {
       con.push({
         $match: {
           "Invoice No": key,
+        },
+      });
+    }
+    if (status) {
+      status = JSON.parse(status);
+      con.push({
+        $match: {
+          status: {
+            $in: status,
+          },
         },
       });
     }

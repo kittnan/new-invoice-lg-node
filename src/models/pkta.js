@@ -6,6 +6,10 @@ const model = new Schema(
     "Processed DT": Date,
     printDate: Date,
     printStatus: Boolean,
+    reprint:[{
+      date:Date,
+      user:String
+    }]
   },
   { timestamps: true, versionKey: false, strict: false }
 );
