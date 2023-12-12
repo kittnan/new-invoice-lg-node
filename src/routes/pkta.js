@@ -6,7 +6,7 @@ const PKTA = require("../models/pkta");
 
 router.get("/", async (req, res, next) => {
   try {
-    let { key ,status} = req.query;
+    let { key, status } = req.query;
     let con = [
       {
         $match: {},
@@ -25,8 +25,8 @@ router.get("/", async (req, res, next) => {
       con.push({
         $match: {
           status: {
-            $in:status
-          }
+            $in: status,
+          },
         },
       });
     }
@@ -57,8 +57,41 @@ router.get("/", async (req, res, next) => {
 
 router.post("/create", async (req, res, next) => {
   try {
-    const data = await PKTA.insertMany(req.body);
-    res.json(data);
+    if (req.body.data) {
+      let invoices = req.body.data.map((a) => a["Delivery Note#"]);
+      console.log("🚀 ~ invoices:", invoices);
+      if (req.body.option && req.body.option == "clear") {
+        const form = req.body.data.map((a) => {
+          return {
+            deleteMany: {
+              filter: {
+                "Delivery Note#": a["Delivery Note#"],
+              },
+            },
+          };
+        });
+        const bwRes = await PKTA.bulkWrite(form)
+        const data = await PKTA.insertMany(req.body.data);
+        res.json(data);
+      } else {
+        let qData = await PKTA.aggregate([
+          {
+            $match: {
+              "Delivery Note#": {
+                $in: invoices,
+              },
+            },
+          },
+        ]);
+        console.log("🚀 ~ qData:", qData);
+        if (qData && qData.length > 0) {
+          throw "duplicate invoice please check!!";
+        } else {
+          const data = await PKTA.insertMany(req.body.data);
+          res.json(data);
+        }
+      }
+    }
   } catch (error) {
     console.log("🚀 ~ error:", error);
     res.sendStatus(500);
