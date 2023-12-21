@@ -48,16 +48,28 @@ router.get("/checkDuplicate", async (req, res, next) => {
         $match: {},
       },
     ];
+    let con2 =[
+      {
+        $match:{}
+      }
+    ]
     if (key) {
       key = JSON.parse(key);
-      con.push({
-        $match: {
-          "Delivery Note#": {
-            $in: key,
-          },
-        },
-      });
     }
+    con.push({
+      $match: {
+        "Delivery Note#": {
+          $in: key,
+        },
+      },
+    });
+    con2.push({
+      $match: {
+        "invoice": {
+          $in: key,
+        },
+      },
+    });
     if (status) {
       status = JSON.parse(status);
       con.push({
@@ -68,8 +80,14 @@ router.get("/checkDuplicate", async (req, res, next) => {
         },
       });
     }
-    const usersQuery = await PKTA.aggregate(con);
-    res.json(usersQuery);
+
+    
+    const res1 = await PKTA.aggregate(con);
+    const res2 = await FORM.aggregate(con2)
+    res.json({
+      pkta:res1,
+      form:res2
+    });
   } catch (error) {
     console.log("🚀 ~ error:", error);
     res.sendStatus(500);

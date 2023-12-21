@@ -2,7 +2,10 @@ let express = require("express");
 let router = express.Router();
 var mongoose = require("mongodb");
 const { ObjectId } = mongoose;
+const PKTA = require("../models/pkta");
+const PACKING = require("../models/packing");
 const FORM = require("../models/form");
+const REPRINT = require("../models/reprint");
 const ItemCode = require("../models/item-code");
 const Consignee = require("../models/consignee");
 const KTC_Address = require("../models/ktc-address");
@@ -215,11 +218,28 @@ router.put("/delete", async (req, res, next) => {
     res.sendStatus(500);
   }
 });
-router.delete("/:id", async (req, res, next) => {
+router.delete("/deleteAllByInvoice", async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const data = await FORM.deleteOne({ _id: id });
-    res.json(data);
+    let { invoice } = req.query;
+
+    // todo delete at PKTA
+    await PKTA.deleteMany({
+      "Delivery Note#": invoice,
+    });
+    // todo delete at FORM
+    await FORM.deleteMany({
+      invoice: invoice,
+    });
+    // todo delete at REPRINT
+    await REPRINT.deleteMany({
+      invoice: invoice,
+    });
+
+    // todo delete at PACKING
+    const result = await PACKING.deleteMany({
+      "Invoice No": invoice,
+    });
+    res.json(result);
   } catch (error) {
     console.log("🚀 ~ error:", error);
     res.sendStatus(500);
