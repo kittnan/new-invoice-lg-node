@@ -24,11 +24,21 @@ router.get("/", async (req, res, next) => {
     ];
     if (key) {
       key = JSON.parse(key);
-      con.push({
-        $match: {
-          invoice: key,
-        },
-      });
+      if (key && key.length > 0) {
+        con.push({
+          $match: {
+            invoice: {
+              $in: key,
+            },
+          },
+        });
+      } else {
+        con.push({
+          $match: {
+            invoice: key,
+          },
+        });
+      }
     }
     if (status) {
       status = JSON.parse(status);
