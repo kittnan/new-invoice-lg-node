@@ -5,7 +5,9 @@ const { ObjectId } = mongoose;
 const PKTA = require("../models/pkta");
 const PACKING = require("../models/packing");
 const FORM = require("../models/form");
+const REPRINT = require("../models/reprint");
 const moment = require("moment");
+
 
 router.get("/", async (req, res, next) => {
   try {
@@ -48,9 +50,9 @@ router.get("/checkDuplicate", async (req, res, next) => {
         $match: {},
       },
     ];
-    let con2 =[
+    let con2 = [
       {
-        $match:{}
+        $match: {}
       }
     ]
     if (key) {
@@ -81,12 +83,12 @@ router.get("/checkDuplicate", async (req, res, next) => {
       });
     }
 
-    
+
     const res1 = await PKTA.aggregate(con);
     const res2 = await FORM.aggregate(con2)
     res.json({
-      pkta:res1,
-      form:res2
+      pkta: res1,
+      form: res2
     });
   } catch (error) {
     console.log("🚀 ~ error:", error);
@@ -189,7 +191,7 @@ router.post("/create", async (req, res, next) => {
             deleteMany: {
               filter: {
                 "invoice": a["Delivery Note#"],
-                
+
               },
             },
           };
@@ -201,7 +203,7 @@ router.post("/create", async (req, res, next) => {
             deleteMany: {
               filter: {
                 "Invoice No": a["Delivery Note#"],
-                
+
               },
             },
           };

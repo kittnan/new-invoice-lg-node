@@ -2,25 +2,5 @@
   "cSpell.words": [
     "accountee",
     "PKTA"
-  ],
-  "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#fefc98",
-    "activityBar.background": "#fefc98",
-    "activityBar.foreground": "#15202b",
-    "activityBar.inactiveForeground": "#15202b99",
-    "activityBarBadge.background": "#02bdba",
-    "activityBarBadge.foreground": "#15202b",
-    "commandCenter.border": "#15202b99",
-    "sash.hoverBorder": "#fefc98",
-    "statusBar.background": "#fdfa66",
-    "statusBar.foreground": "#15202b",
-    "statusBarItem.hoverBackground": "#fcf834",
-    "statusBarItem.remoteBackground": "#fdfa66",
-    "statusBarItem.remoteForeground": "#15202b",
-    "titleBar.activeBackground": "#fdfa66",
-    "titleBar.activeForeground": "#15202b",
-    "titleBar.inactiveBackground": "#fdfa6699",
-    "titleBar.inactiveForeground": "#15202b99"
-  },
-  "peacock.color": "#fdfa66"
+  ]
 }
