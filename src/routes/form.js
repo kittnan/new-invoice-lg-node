@@ -60,7 +60,7 @@ router.get("/", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
   try {
-    let { key, date, status } = req.query;
+    let { key, date, status, sort } = req.query;
     let con = [
       {
         $match: {},
@@ -83,6 +83,14 @@ router.get("/search", async (req, res, next) => {
           status: {
             $in: status,
           },
+        },
+      });
+    }
+    if (sort) {
+      sort = JSON.parse(sort);
+      con.push({
+        $sort: {
+          invoice: sort,
         },
       });
     }
