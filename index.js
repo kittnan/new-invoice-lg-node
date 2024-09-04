@@ -20,46 +20,34 @@ const server = app.listen(port, () => {
 });
 
 app.use(morgan("tiny"));
-app.use(bodyParser.json({ limit: "5mb" }));
-app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
 app.use(compression());
 
-let KTC_ADDRESS = require("./src/routes/ktc-address");
-app.use("/ktc-address", KTC_ADDRESS);
+app.use("/ktc-address", require("./src/routes/ktc-address"));
 
-let CONSIGNEE = require("./src/routes/consignee");
-app.use("/consignee", CONSIGNEE);
+app.use("/consignee", require("./src/routes/consignee"));
 
-let CONSIGNEE_CODE = require("./src/routes/consignee-code");
-app.use("/consignee-code", CONSIGNEE_CODE);
+app.use("/consignee-code", require("./src/routes/consignee-code"));
 
-let ACCOUNTEE = require("./src/routes/accountee");
-app.use("/accountee", ACCOUNTEE);
+app.use("/accountee", require("./src/routes/accountee"));
 
-let PKTA = require("./src/routes/pkta");
-app.use("/pkta", PKTA);
+app.use("/pkta", require("./src/routes/pkta"));
 
-let PACKING = require("./src/routes/packing");
-app.use("/packing", PACKING);
+app.use("/packing", require("./src/routes/packing"));
 
-let ITEM_CODE = require("./src/routes/item-code");
-app.use("/item-code", ITEM_CODE);
+app.use("/item-code", require("./src/routes/item-code"));
 
-let COUNTRY = require("./src/routes/country");
-app.use("/country", COUNTRY);
+app.use("/country", require("./src/routes/country"));
 
-let MODEL = require("./src/routes/model");
-app.use("/model", MODEL);
+app.use("/model", require("./src/routes/model"));
 
-let Users = require("./src/routes/users");
-app.use("/users", Users);
+app.use("/users", require("./src/routes/users"));
 
-let Reprint = require("./src/routes/reprint");
-app.use("/reprint", Reprint);
+app.use("/reprint", require("./src/routes/reprint"));
 
-let Form = require("./src/routes/form");
-app.use("/form", Form);
+app.use("/form", require("./src/routes/form"));
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
