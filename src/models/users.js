@@ -7,6 +7,9 @@ const model = new Schema(
     name: String,
     auth_admin: String,
     auth_user: String,
+    department: String,
+    position: String,
+    verify: String,
     active: {
       type: Boolean,
       default: true,

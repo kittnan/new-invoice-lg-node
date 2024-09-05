@@ -53,13 +53,20 @@ router.post("/import", async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const usersQuery = await USERS.aggregate([
+    let { verify } = req.query
+    let con = [
       {
+        $match: { active: true }
+      }
+    ]
+    if (verify) {
+      con.push({
         $match: {
-          active: true,
-        },
-      },
-    ]);
+          verify: verify
+        }
+      })
+    }
+    const usersQuery = await USERS.aggregate(con);
     res.json(usersQuery);
   } catch (error) {
     console.log("🚀 ~ error:", error);
