@@ -49,6 +49,13 @@ app.use("/reprint", require("./src/routes/reprint"));
 
 app.use("/form", require("./src/routes/form"));
 
+// todo SAP Route
+app.use("/sap/sap_data", require("./src/routes_sap/sap_data"));
+app.use("/sap/sap_packing", require("./src/routes_sap/sap_packing"));
+app.use("/sap/sap_form", require("./src/routes_sap/sap_form"));
+app.use("/sap/sap_reprint", require("./src/routes_sap/sap_reprint"));
+
+
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST ,PUT ,DELETE");
