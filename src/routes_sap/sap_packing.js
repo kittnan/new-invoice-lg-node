@@ -14,10 +14,9 @@ router.get("/", async (req, res, next) => {
     ];
     if (invoice) {
       invoice = JSON.parse(invoice);
-      console.log("🚀 ~ invoice:", invoice)
       con.push({
         $match: {
-          "External Delivery ID": {
+          "Invoice No": {
             $in: invoice
           },
         },
