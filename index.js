@@ -11,7 +11,8 @@ mongoose.set("strictQuery", false);
 
 const dotenv = require("dotenv");
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenv.config({ path: `.env` });
+// dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 console.log("PORT:", process.env.PORT);
 let mongooseConnect = require("./connect");
 const port = process.env.PORT;
@@ -54,6 +55,10 @@ app.use("/sap/sap_data", require("./src/routes_sap/sap_data"));
 app.use("/sap/sap_packing", require("./src/routes_sap/sap_packing"));
 app.use("/sap/sap_form", require("./src/routes_sap/sap_form"));
 app.use("/sap/sap_reprint", require("./src/routes_sap/sap_reprint"));
+
+// todo NO Common Route
+app.use("/no_common/no_common_data", require("./src/routes_no_common/no_common_data"));
+app.use("/no_common/no_common_data_form", require("./src/routes_no_common/no_common_data_form"));
 
 
 app.use(function (req, res, next) {
