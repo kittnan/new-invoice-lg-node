@@ -60,13 +60,21 @@ app.use("/sap/sap_reprint", require("./src/routes_sap/sap_reprint"));
 app.use("/no_common/no_common_data", require("./src/routes_no_common/no_common_data"));
 app.use("/no_common/no_common_data_form", require("./src/routes_no_common/no_common_data_form"));
 
-
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST ,PUT ,DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "X-Requested-with,Content-Type");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Service is healthy",
+    timestamp: new Date().toISOString(),
+  });
 });
+
+
+  app.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST ,PUT ,DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-with,Content-Type");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    next();
+  });
 
 module.exports = app;
